@@ -1,0 +1,11 @@
+{
+  "name": "private-chat",
+  "version": "1.0.0",
+  "description": "private chat app",
+  "main": "app.js",
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "ws": "^1.1.1"
+  }
+}

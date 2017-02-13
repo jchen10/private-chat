@@ -1,0 +1,11 @@
+
+body {
+  font: 18px Helvetica, Arial;
+}
+
+input {
+  border: 2px;
+  padding: 4px;
+  width: 79%;
+  margin-right: 2px;
+}

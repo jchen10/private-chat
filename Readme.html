@@ -1,0 +1,62 @@
+<!DOCTYPE html5>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+  <title>Private Chat Readme</title>
+  <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+</head>
+
+<header class="w3-container w3-red">
+  <h1>Private Chat</h1>
+</header>
+<pre>
+   This application provides a framework for multi-party 'chat' conversations, with a significant degree
+   of confidence that your conversations will be PRIVATE! This is accomplished in the following manner:
+
+      The application and socket-server are hosted on your own private server, behind a firewall.
+      This private server should only expose/forward a single port (81). All users will need to
+      know the IP address/port# in advance.
+
+      All names and messages are encripted with a fairly strong encription method. This encription
+      is based on a mutually agreed upon 'passcode'. Each user must know in advamce, both the passcode,
+      and the IP-address:port# of the server. This passcode is entered each time a new socket-client starts.
+      A passcode is never locally cached or sent out on the wire. All messages are transmitted over the
+      socket connection in an encripted form. Client Apps can view unencripted text only if they have
+      entered the correct passcode. Otherwise only mangled text will be displayed.
+
+      Encripted messages are never unencripted or cached on the server. The server has no knowledge of
+      the app or messages. It simply relays each encripted message to all registered clients.
+
+      Messages are never saved/cached on the client or the server. They are simply added as 'li' tags
+      on each clients web-page. These HtmlElements containing the decoded messages, are locally created
+      and never exposed to the network or the server.
+
+      Although Your browser will likely cache the app files sent from the server, it will never cache
+      the added 'li' elements that are created in real-time by the app. When the page closes, the added
+      elements will be disposed without a trace.
+
+      Even if your internet connection is being monitored, a packet sniffer will only see encripted
+      socket messages.  Although the encription is capable of being broken by brute-force passcode
+      trials, a frequent passcode change would prevent this. Only a goverment agency with billion dollar
+      servers, directly sniffing your private connection to this server, would be able to eventually
+      decode your private messages.
+
+   The point is, you are not using public servers/services that may be routinely monitored and cached
+   by the service provider. This service-provider caching is known to be provided to government agencies
+   for realtime and/or historical analysis.
+
+   NOTE: This app would NOT prevent someone with unathorized access to
+   your device from examining the browsers DOM, or capturing keystrokes.
+
+   Example of messages sent by server:
+
+    {"type":"RegisterChatter","data":{"id":"lgODawGlzp","name":"lSo4I37vTm0="}}
+    {"type":"RegisterChatter","data":{"id":"lCN1WNOMA7","name":"5dpelPRGIbI="}}
+    {"type":"chat-message","data":{"id":"lCN1WNOMA7","name":"5dpelPRGIbI=","msg":"tq0uoSfrf5g=","color":"green"}}
+    {"type":"chat-message","data":{"id":"lgODawGlzp","name":"lSo4I37vTm0=","msg":"lg2zm5v7fHc=","color":"red"}}
+    {"type":"chat-message","data":{"id":"lCN1WNOMA7","name":"5dpelPRGIbI=","msg":"9R9Og2FGrUE=","color":"green"}}
+    {"type":"chat-message","data":{"id":"lgODawGlzp","name":"lSo4I37vTm0=","msg":"ZKGNz1+xus93X9hvSe7v6w==","color":"red"}}
+
+</pre>
+</body>
+</html>

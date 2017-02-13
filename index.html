@@ -1,0 +1,33 @@
+<!DOCTYPE html5>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<head>
+  <title>Private Chat</title>
+  <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <script src="scripts/tea.min.js"></script>
+  <script src="scripts/app.js"></script>
+</head>
+
+<body style="max-width:400px">
+<div class="w3-card-4">
+<header class="w3-container w3-red">
+  <h1>Private Chat</h1>
+</header>
+<div class="w3-container">
+<hr>
+  <ul id="messages" class="w3-ul w3-large w3-round-large" style="list-style-type:none"></ul>
+</div>
+
+<footer style="max-width:400px" class="w3-container w3-bottom w3-red">
+      <input id="msgBox"
+      autocomplete="off"
+      class=" w3-border w3-topbar w3-border-red"
+      onkeydown = "if (event.keyCode == 13) document.getElementById('sendbutton').click()">
+      <button id="sendbutton">Send</button>
+</footer>
+</div>
+</body>
+</html>
