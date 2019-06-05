@@ -6,6 +6,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "ws": "^1.1.1"
+    "ws": "^3.3.1"
   }
 }
