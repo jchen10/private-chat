@@ -71,7 +71,7 @@ function httpHamdler(req, res) {
 
 
 // Create a static server to serve client files.
-let server = http.createServer(httpHamdler).listen(4131);
+let server = http.createServer(httpHamdler).listen(8818);
 
 let socketServer = new WebSocketServer({ server });
 
