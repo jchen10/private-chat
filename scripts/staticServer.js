@@ -2,14 +2,11 @@
 //----------------------------------------------------------\\
 //-----------  load all required node modules --------------\\
 //----------------------------------------------------------\\
-const httpServer = require('http').createServer(httpHamdler).listen(81)
+const http = require('http')
 const url = require('url')  // URL parsing utility
 const fs = require('fs')  // file system utillity
 const path = require('path') // file path utility
 const WebSocketServer = require('ws').Server // our websocket server class
-
-// instantiates a websocket server object
-let socketServer = new WebSocketServer({ server: httpServer })
 
 //----------------------------------------------------------\\
 //------  handles all http requests for this localhost -----\\
@@ -72,6 +69,13 @@ function httpHamdler(req, res) {
   });
 }
 
+
+// Create a static server to serve client files.
+let server = http.createServer(httpHamdler).listen(4131);
+
+let socketServer = new WebSocketServer({ server });
+
+let currentClients = [];
 //----------------------------------------------------------\\
 //---------- unique colors for chat members ----------------\\
 //----------------------------------------------------------\\
@@ -125,9 +129,15 @@ socketServer.on('connection', function (client) {
   // broadcast that this user has exited the hat session
   // free-up the users color to be reused
   client.on('close', (message) => {
-    broadcastAll(client, 'ChatterExited', {name: client.name})
+    broadcastAll(client, 'ChatterExited', { name: client.name })
     freeTheColor(client)
+    for (let i = 0; i < currentClients.length; ++i) {
+      if (client === currentClients[i]) {
+        currentClients.splice(i, 1)
+      }
+    }
   })
+  currentClients.push(client)
 })
 
 //----------------------------------------------------------\\
@@ -163,9 +173,9 @@ var freeTheColor = function (client) {
 //--  broadcasts to all socket clients except the sender ---\\
 //----------------------------------------------------------\\
 var broadcast = function (client, name, data) {
-  for (var i in socketServer.clients) {
-    if (client !== socketServer.clients[i]) {
-      socketServer.clients[i].send(JSON.stringify({ type: name, data: data }))
+  for (var i in currentClients) {
+    if (client !== currentClients[i]) {
+      currentClients[i].send(JSON.stringify({ type: name, data: data }))
     }
   }
 };
@@ -174,8 +184,8 @@ var broadcast = function (client, name, data) {
 //- broadcasts to all socket clients including the sender --\\
 //----------------------------------------------------------\\
 var broadcastAll = function (client, name, data) {
-  for (var i in socketServer.clients) {
-    //console.log('broadcastAll: ' + JSON.stringify({ type: name, data: data }))
-    socketServer.clients[i].send(JSON.stringify({ type: name, data: data }))
+  for (var i in currentClients) {
+    // console.log('broadcastAll: ' + JSON.stringify({ type: name, data: data }))
+    currentClients[i].send(JSON.stringify({ type: name, data: data }))
   }
 }

@@ -54,9 +54,11 @@ var privateApp = (function () {
         this.color = data.color
       }
       li.style.color = data.color
-      li.onclick = (e) => {
+      let remove_li = (e) => {
         li.parentElement.removeChild(li)
       }
+      li.onclick = remove_li
+      setTimeout(remove_li, 60 * 1000)
       return li
     }
 
@@ -80,40 +82,45 @@ var privateApp = (function () {
     let encriptedName = ''
     let decriptedName = ''
 
-    // incoming socket message handler
-    app.socket.onmessage = (message) => {
-      // all messages are sent as encripted strings
-      // here we parse them back to objects
-      let payload = JSON.parse(message.data)
-      // get the message-type name
-      let messageType = payload.type
-      switch (messageType) {
-        // new user joined
-        case 'RegisterChatter':
-          // decrypt the senders name
-          decriptedName = Tea.decrypt(payload.data.name, app.pswd)
-          // turn it into a new <li> element and add it
-          // to our list <ul> element named 'message'
-          messages.appendChild(app.buildListItem(payload.data, decriptedName + ' joined the chat!'))
-          break;
-        // a user has exited (closing his socket connection)
-        case 'ChatterExited':
-          // decrypt the senders name
-          decriptedName = Tea.decrypt(payload.data.name, app.pswd);
-          // turn it into a new <li> element and add it
-          // to our list <ul> element named 'message'
-          messages.appendChild(app.buildListItem(payload.data, decriptedName + ' exited this chat!'))
-        // a user posted a chat message
-        case 'chat-message':
-          // decrypt the senders name
-          decriptedName = Tea.decrypt(payload.data.name, app.pswd);
-          // decrypt the senders message payload
-          decrtext = Tea.decrypt(payload.data.msg, app.pswd);
-          // turn them into a new <li> element and add it
-          // to our list <ul> element named 'message'
-          messages.appendChild(app.buildListItem(payload.data, decriptedName + ' >> ' + decrtext))
-          break;
+    app.socket.onopen = event => {
+
+      // incoming socket message handler
+      app.socket.onmessage = (message) => {
+        // all messages are sent as encripted strings
+        // here we parse them back to objects
+        let payload = JSON.parse(message.data)
+        // get the message-type name
+        let messageType = payload.type
+        switch (messageType) {
+          // new user joined
+          case 'RegisterChatter':
+            // decrypt the senders name
+            decriptedName = Tea.decrypt(payload.data.name, app.pswd)
+            // turn it into a new <li> element and add it
+            // to our list <ul> element named 'message'
+            messages.appendChild(app.buildListItem(payload.data, decriptedName + ' joined the chat!'))
+            break;
+          // a user has exited (closing his socket connection)
+          case 'ChatterExited':
+            // decrypt the senders name
+            decriptedName = Tea.decrypt(payload.data.name, app.pswd);
+            // turn it into a new <li> element and add it
+            // to our list <ul> element named 'message'
+            messages.appendChild(app.buildListItem(payload.data, decriptedName + ' exited this chat!'))
+          // a user posted a chat message
+          case 'chat-message':
+            // decrypt the senders name
+            decriptedName = Tea.decrypt(payload.data.name, app.pswd);
+            // decrypt the senders message payload
+            decrtext = Tea.decrypt(payload.data.msg, app.pswd);
+            // turn them into a new <li> element and add it
+            // to our list <ul> element named 'message'
+            messages.appendChild(app.buildListItem(payload.data, decriptedName + ' >> ' + decrtext))
+            break;
+        }
       }
+
+      app.socketSend('RegisterChatter', { id: app.id, name: encriptedName })
     }
 
     // handle the 'send' button click event
@@ -130,7 +137,6 @@ var privateApp = (function () {
     // and sending it to the socket-server, where it will
     // be broadcast to every registered user (including this user)
     encriptedName = Tea.encrypt(app.name, app.pswd);
-    app.socketSend('RegisterChatter', { id: app.id, name: encriptedName })
 
   }
 
